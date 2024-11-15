@@ -8,8 +8,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+with open("api_key.txt") as f:
+    api_key=f.read().strip()
+    
 os.environ["LANGCHAIN_TRACING_V2"]="true"
-os.environ["LANGCHAIN_API_KEY"]= "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"
+os.environ["LANGCHAIN_API_KEY"]= api_key
 
 ## Prompt Template
 
