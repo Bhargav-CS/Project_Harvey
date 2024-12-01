@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-with open("api_key.txt") as f:
+with open("api_key_langchain.txt") as f:
     api_key=f.read().strip()
     
 os.environ["LANGCHAIN_TRACING_V2"]="true"

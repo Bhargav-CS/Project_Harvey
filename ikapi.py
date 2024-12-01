@@ -19,7 +19,7 @@ class IKApi:
         self.logger     = logging.getLogger('ikapi')
 
         self.headers    = {'Authorization': 'Token %s' % args.token, \
-                           'Accept': 'application/json'}                        
+                           'Accept': 'application/json'}
 
         self.basehost   = 'api.indiankanoon.org'
         self.storage    = storage
@@ -381,6 +381,3 @@ if __name__ == '__main__':
         ikapi.save_search_results(args.q)
     elif args.doctype:
         ikapi.download_doctype(args.doctype, args.fromdate, args.todate)
-
-
-
