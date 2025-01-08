@@ -23,7 +23,7 @@ def ensure_output_folder_exists(folder):
 
 def sanitize_filename(filename):
     """Sanitize the filename to remove or replace invalid characters."""
-    return "".join(c if c.isalnum() or c in (' ', '_', '-') else '_' for c in filename)
+    return "".join(c if c.isalnum() or c in ('_', '-') else '_' for c in filename.replace(' ', '_'))
 
 def download_pdf(doc_id, title, base_url, output_folder, headers):
     """Download a PDF document by its ID and save it with a title and ID."""
