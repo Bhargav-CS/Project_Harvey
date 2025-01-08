@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
 import { FaPaperclip, FaImage } from "react-icons/fa"; // Paperclip and Image icons
 import "./Chatbot.css"; // For custom styles
 
@@ -30,12 +32,24 @@ const ChatbotUI = () => {
     setUserInput("");
     setFile(null);
 
-    // Simulate bot response (Replace with actual backend API call if needed)
-    const botMessage = {
-      text: `Harvey : ${userInput}`,
-      sender: "bot",
-    };
-    setMessages((prevMessages) => [...prevMessages, botMessage]);
+    try {
+      // Make API call to get bot response
+      // const response = await axios.post("http://localhost:8000/query", {
+      const response = await axios.post("https://426d-2409-40c4-4f-b317-7de4-ea33-d13a-80d0.ngrok-free.app/query", {
+        messages: [
+          ...messages.map((msg) => ({ role: msg.sender, content: msg.text })),
+          { role: "user", content: userInput },
+        ],
+      });
+
+      const botMessage = {
+        text: response.data.answer,
+        sender: "bot",
+      };
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+    } catch (error) {
+      console.error("Error fetching bot response:", error);
+    }
   };
 
   // Update previous cases only when a message is sent
@@ -43,8 +57,7 @@ const ChatbotUI = () => {
     if (messages.length > 1) {  // Avoid updating when the component mounts
       setPreviousCases((prevCases) => [
         ...prevCases,
-        `
-         ${messages[messages.length - 1].text}`,
+        `${messages[messages.length - 1].text}`,
       ]);
     }
   }, [messages]);  // Dependency on messages
@@ -76,7 +89,11 @@ const ChatbotUI = () => {
               key={index}
               className={`message ${msg.sender === "user" ? "user" : "bot"}`}
             >
-              {msg.text}
+              {msg.sender === "bot" ? (
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              ) : (
+                msg.text
+              )}
             </div>
           ))}
 

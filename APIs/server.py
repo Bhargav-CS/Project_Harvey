@@ -1,4 +1,7 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List
 from pydantic import BaseModel
 import uvicorn
 import os
@@ -151,6 +154,14 @@ app = FastAPI(
     title="Legal AI Assistant",
     version="1.0",
     description="A FastAPI server for the Legal AI Assistant"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 class Message(BaseModel):
