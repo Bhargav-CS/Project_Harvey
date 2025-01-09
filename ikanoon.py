@@ -1,7 +1,7 @@
 import json
 import requests
 
-with open("kanoo_api_key.txt") as f:
+with open("kanoon_api_key.txt") as f:
     API_TOKEN = f.read().strip()
  
 
