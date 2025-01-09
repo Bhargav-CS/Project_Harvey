@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaPaperclip, FaImage } from "react-icons/fa"; // Paperclip and Image icons
 import "./Chatbot.css"; // For custom styles
 
@@ -12,63 +12,83 @@ const ChatbotUI = () => {
 
   // New state for sidebar
   const [previousCases, setPreviousCases] = useState([
-    "The People v. Nirmala Sitaraman",
-    "Koyna Dam v. Ajit dada Pawar",
-    "Rajsaheb Thakare v. Waqf Board",
-    "Yuzvendra Chahal v. Dhanashree Verma",
+    { name: "The People v. Nirmala Sitaraman", messages: [] },
+    { name: " Article 19 in Constitution of India", messages: [] },
+    { name: "false murder accusation", messages: [] },
+    { name: "income tax notice file", messages: [] },
   ]);
+
+  const [currentSession, setCurrentSession] = useState([]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!userInput.trim() && !file) return;
 
-    // Add the user's message to the chat
     const newUserMessage = { text: userInput, sender: "user" };
     setMessages([...messages, newUserMessage]);
+    setCurrentSession((session) => [...session, newUserMessage]);
 
-    // Clear the input field and file preview
     setUserInput("");
     setFile(null);
 
-    // Simulate bot response (Replace with actual backend API call if needed)
+    // AI response
     const botMessage = {
       text: `Harvey : ${userInput}`,
       sender: "bot",
     };
+
     setMessages((prevMessages) => [...prevMessages, botMessage]);
+    setCurrentSession((session) => [...session, botMessage]);
+
+    // Save the current session immediately after sending the AI response
+    saveCurrentSession();
   };
 
-  // Update previous cases only when a message is sent
-  useEffect(() => {
-    if (messages.length > 1) {  // Avoid updating when the component mounts
+  const saveCurrentSession = () => {
+    if (currentSession.length > 0) {
+      const sessionName = generateSessionName(currentSession);
       setPreviousCases((prevCases) => [
         ...prevCases,
-        `
-         ${messages[messages.length - 1].text}`,
+        { name: sessionName, messages: [...currentSession] },
       ]);
+      setCurrentSession([]); // Reset session for new conversations
     }
-  }, [messages]);  // Dependency on messages
+  };
+
+  const startNewChat = () => {
+    setMessages([{ text: "Hello! How can I assist you today?", sender: "bot" }]);
+    setCurrentSession([]);
+  };
+
+  const generateSessionName = (session) => {
+    const firstUserMessage = session.find((msg) => msg.sender === "user");
+    return (
+      firstUserMessage?.text
+        .split(" ")
+        .slice(0, 5)
+        .join(" ")
+        .replace(/[^a-zA-Z0-9 ]/g, "") || "Unnamed Session"
+    );
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    setShowUploadOptions(false); // Close options after selecting a file
+    setShowUploadOptions(false);
   };
 
   return (
     <div className="chatbot-container">
-      {/* Sidebar */}
       <div className="sidebar">
         <h2>Previous Cases</h2>
         <ul className="case-list">
           {previousCases.map((caseItem, index) => (
             <li key={index} className="case-item">
-              {caseItem}
+              <strong>{caseItem.name}</strong>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Chatbox */}
       <div className="chatbox">
         <div className="chat-messages">
           {messages.map((msg, index) => (
@@ -80,7 +100,6 @@ const ChatbotUI = () => {
             </div>
           ))}
 
-          {/* File/Image Preview */}
           {file && (
             <div className="file-preview">
               {file.type.startsWith("image/") ? (
@@ -147,6 +166,15 @@ const ChatbotUI = () => {
             </div>
           )}
         </form>
+
+        <div className="button-container">
+          <button onClick={saveCurrentSession} className="save-session-button">
+            Save Chat Session
+          </button>
+          <button onClick={startNewChat} className="new-chat-button">
+            New Chat
+          </button>
+        </div>
       </div>
     </div>
   );
