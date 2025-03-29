@@ -1,8 +1,14 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List
+from pydantic import BaseModel
+import uvicorn
 import os
-import pickle  # Import pickle module
+import pickle
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_ollama import OllamaEmbeddings  # Updated import
+from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.llms import ollama
 from langchain_core.prompts import ChatPromptTemplate
@@ -35,16 +41,18 @@ class LegalAIAssistant:
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super(LegalAIAssistant, cls).__new__(cls)
+            cls._instance._initialized = False
         return cls._instance
 
     def __init__(self, model_name="llama3.1", temperature=0.9):
-        if not hasattr(self, 'initialized'):
-            self.model_name = model_name
-            self.temperature = temperature
-            self.llm = None
-            self.db = None
-            self.prompt = None
-            self.initialized = False
+        if self._initialized:
+            return
+        self.model_name = model_name
+        self.temperature = temperature
+        self.llm = None
+        self.db = None
+        self.prompt = None
+        self._initialized = True
 
     def initialize_db(self, split_documents, persist_directory):
         self.db = Chroma.from_documents(split_documents, OllamaEmbeddings(model=self.model_name), persist_directory=persist_directory)
@@ -99,6 +107,7 @@ class LegalAIAssistant:
             - Include mandatory legal disclaimer about AI-generated advice limitations
             {context}
 
+            Put this disclaimer at the end of the response:
             Disclaimer: AI-generated insights do not constitute professional legal advice. Consultation with licensed legal professionals is recommended.
 
             Question : {input}
@@ -111,11 +120,6 @@ class LegalAIAssistant:
 
     def get_response(self, retrieval_chain, query):
         return retrieval_chain.invoke({"input": query})
-
-    def save_db(self, directory):
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        # No need to call persist as Chroma automatically persists the data
 
     def load_db(self, directory):
         self.db = Chroma(persist_directory=directory, embedding_function=OllamaEmbeddings(model=self.model_name))
@@ -140,23 +144,47 @@ def initialize_components():
         legal_ai_assistant.load_db(db_cache)
     else:
         legal_ai_assistant.initialize_db(split_documents, db_cache)
-        legal_ai_assistant.save_db(db_cache)
     
     legal_ai_assistant.initialize_llm()
     legal_ai_assistant.create_prompt()
 
     return legal_ai_assistant
 
-def main():
+app = FastAPI(
+    title="Legal AI Assistant",
+    version="1.0",
+    description="A FastAPI server for the Legal AI Assistant"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+class Message(BaseModel):
+    role: str
+    content: str
+
+class QueryRequest(BaseModel):
+    messages: list[Message]
+
+@app.on_event("startup")
+async def startup_event():
+    global legal_ai_assistant, retrieval_chain
     legal_ai_assistant = initialize_components()
     retrieval_chain = legal_ai_assistant.create_retrieval_chain()
-    
-    while True:
-        query = input("Enter your query: ")
-        if query.lower() in ["exit", "quit"]:
-            break
-        response = legal_ai_assistant.get_response(retrieval_chain, query)
-        print(response['answer'])
+
+@app.post("/query")
+async def get_query_response(request: QueryRequest):
+    try:
+        conversation = "\n".join([f"{msg.role}: {msg.content}" for msg in request.messages])
+        response = legal_ai_assistant.get_response(retrieval_chain, conversation)
+        return {"answer": response['answer']}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run(app, host="localhost", port=8000)

@@ -14,10 +14,7 @@ const ChatbotUI = () => {
 
   // New state for sidebar
   const [previousCases, setPreviousCases] = useState([
-    "The People v. Nirmala Sitaraman",
-    "Koyna Dam v. Ajit dada Pawar",
-    "Rajsaheb Thakare v. Waqf Board",
-    "Yuzvendra Chahal v. Dhanashree Verma",
+    "The People v. Humdard Dawakhana",
   ]);
 
   const handleSendMessage = async (e) => {
@@ -35,7 +32,7 @@ const ChatbotUI = () => {
     try {
       // Make API call to get bot response
       // const response = await axios.post("http://localhost:8000/query", {
-      const response = await axios.post("https://426d-2409-40c4-4f-b317-7de4-ea33-d13a-80d0.ngrok-free.app/query", {
+      const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
         messages: [
           ...messages.map((msg) => ({ role: msg.sender, content: msg.text })),
           { role: "user", content: userInput },

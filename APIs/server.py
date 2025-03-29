@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from pydantic import BaseModel
 import uvicorn
 import os
 import pickle
@@ -16,12 +15,17 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
 
 class PDFProcessor:
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, directory_path):
+        self.directory_path = directory_path
 
-    def load_pdf(self):
-        loader = PyPDFLoader(self.file_path)
-        return loader.load()
+    def load_pdfs(self):
+        documents = []
+        for file_name in os.listdir(self.directory_path):
+            if file_name.endswith('.pdf'):
+                file_path = os.path.join(self.directory_path, file_name)
+                loader = PyPDFLoader(file_path)
+                documents.extend(loader.load())
+        return documents
 
     def split_text(self, documents):
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
@@ -125,16 +129,16 @@ class LegalAIAssistant:
         self.db = Chroma(persist_directory=directory, embedding_function=OllamaEmbeddings(model=self.model_name))
 
 def initialize_components():
-    file_path = "D:\\capstone\\Project_Harvey\\downloaded_pdfs\\Article_19_in_Constitution_of_India_1218090.pdf"
+    directory_path = "D:\\capstone\\Project_Harvey\\downloaded_pdfs\\article_19"
     documents_cache = "documents_cache.pkl"
     db_cache = "db_cache"
     
-    pdf_processor = PDFProcessor(file_path)
+    pdf_processor = PDFProcessor(directory_path)
     
     if os.path.exists(documents_cache):
         split_documents = pdf_processor.load_documents(documents_cache)
     else:
-        documents = pdf_processor.load_pdf()
+        documents = pdf_processor.load_pdfs()
         split_documents = pdf_processor.split_text(documents)
         pdf_processor.save_documents(split_documents, documents_cache)
 
@@ -169,7 +173,7 @@ class Message(BaseModel):
     content: str
 
 class QueryRequest(BaseModel):
-    messages: list[Message]
+    messages: List[Message]
 
 @app.on_event("startup")
 async def startup_event():
