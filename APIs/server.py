@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -13,6 +13,7 @@ from langchain_community.llms import ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
+from auth import login_user, signup_user  # Import the route handlers from auth.py
 
 class PDFProcessor:
     def __init__(self, directory_path):
@@ -189,6 +190,16 @@ async def get_query_response(request: QueryRequest):
         return {"answer": response['answer']}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Create a router for authentication
+auth_router = APIRouter()
+
+# Add the login and signup routes to the router
+auth_router.post("/auth/login")(login_user)
+auth_router.post("/auth/signup")(signup_user)
+
+# Include the auth router in the main app
+app.include_router(auth_router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)

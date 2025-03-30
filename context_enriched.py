@@ -4,8 +4,9 @@ from typing import List, Dict, Any, Optional
 from pypdf import PdfReader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain_chroma import Chroma
+from langchain.embeddings.google_palm import GooglePalmEmbeddings as GoogleGenerativeAIEmbeddings
+from langchain.chat_models import ChatGooglePalm as ChatGoogleGenerativeAI
+from langchain.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
@@ -15,7 +16,7 @@ from langchain_core.retrievers import BaseRetriever
 from pydantic import Field
 
 # Hardcoded Google API key
-GOOGLE_API_KEY = "add your api-key"
+GOOGLE_API_KEY = "AIzaSyDrHFdp0hGQhukw-wVKzTw4A9axe0P-Deo"
 
 class PDFProcessor:
     def __init__(self, file_path: str):
@@ -235,7 +236,7 @@ def initialize_components(file_path: str):
     return legal_ai_assistant
 
 def main():
-    file_path = "quaterly.pdf"
+    file_path = "downloaded_pdfs\\article_19\\Article_19_in_Constitution_of_India_1218090.pdf"
     
     try:
         legal_ai_assistant = initialize_components(file_path)

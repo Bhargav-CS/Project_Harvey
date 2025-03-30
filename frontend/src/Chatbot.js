@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect
+import axios from "axios"; // Added axios
 import { FaPaperclip, FaImage } from "react-icons/fa"; // Paperclip and Image icons
 import "./Chatbot.css"; // For custom styles
 
@@ -30,8 +31,8 @@ const ChatbotUI = () => {
 
     try {
       // Make API call to get bot response
-      // const response = await axios.post("http://localhost:8000/query", {
-      const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
+      const response = await axios.post("http://localhost:8000/query", {
+      // const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
         messages: [
           ...messages.map((msg) => ({ role: msg.sender, content: msg.text })),
           { role: "user", content: userInput },
@@ -48,16 +49,21 @@ const ChatbotUI = () => {
     }
   };
 
-  // Update previous cases only when a message is sent
   useEffect(() => {
-    if (messages.length > 1) {  // Avoid updating when the component mounts
+    if (messages.length > 1) { // Avoid updating when the component mounts
+      const sessionName = generateSessionName(currentSession); // Defined sessionName
       setPreviousCases((prevCases) => [
         ...prevCases,
         { name: sessionName, messages: [...currentSession] },
       ]);
       setCurrentSession([]); // Reset session for new conversations
     }
-  };
+  }, [messages]); // Added dependency array
+
+  const saveCurrentSession = () => {
+    // Save the current session logic (e.g., to local storage or backend)
+    console.log("Saving current session:", currentSession);
+  }; // Added saveCurrentSession function
 
   const startNewChat = () => {
     setMessages([{ text: "Hello! How can I assist you today?", sender: "bot" }]);
