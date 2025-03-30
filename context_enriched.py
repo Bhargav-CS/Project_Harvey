@@ -16,7 +16,7 @@ from langchain_core.retrievers import BaseRetriever
 from pydantic import Field
 
 # Hardcoded Google API key
-GOOGLE_API_KEY = "AIzaSyDrHFdp0hGQhukw-wVKzTw4A9axe0P-Deo"
+GOOGLE_API_KEY = "key"
 
 class PDFProcessor:
     def __init__(self, file_path: str):
