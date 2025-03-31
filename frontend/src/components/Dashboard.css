@@ -1,5 +1,5 @@
 .dashboard-container {
-    background-color: #2b2b2b; /* Dark background for the dashboard */
+    background-color: #faf6f6; /* Dark background for the dashboard */
     padding: 40px;
     font-family: 'Helvetica Neue', sans-serif;
     color: #fff;
@@ -12,7 +12,7 @@
   
   .dashboard-header h1 {
     font-size: 3rem;
-    color: #fff;
+    color: #020202;
   }
   
   .dashboard-header p {
@@ -43,14 +43,14 @@
   }
   
   .card h3 {
-    color: #fff;
+    color: #ffffff;
     font-size: 1.8rem;
     margin-bottom: 15px;
   }
   
   .card p {
     font-size: 1rem;
-    color: #ccc; /* Lighter text for description */
+    color: #fdfdfd; /* Lighter text for description */
   }
   
   .card ul {
@@ -60,13 +60,13 @@
   
   .card ul li {
     font-size: 1rem;
-    color: #ddd; /* Lighter text for list items */
+    color: #ffffff; /* Lighter text for list items */
     margin-bottom: 10px;
   }
   
   .card-button {
     display: inline-block;
-    background-color: #007bff;
+    background-color: #e06b1c;
     color: white;
     padding: 10px 20px;
     text-decoration: none;

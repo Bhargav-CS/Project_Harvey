@@ -1,11 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
+ 
 import "./Dashboard.css";  // Make sure you have the correct styles for the dashboard
+
+
 
 const Dashboard = () => {
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
+      <div className="dashboard-header text-black" >
         <h1>Specter.AI</h1>
         <p>Revolutionizing Legal Assistance with AI</p>
       </div>
@@ -22,7 +26,7 @@ const Dashboard = () => {
             <li><strong>Document Drafting:</strong> Create legally sound documents with AI-powered suggestions.</li>
             <li><strong>Case Analysis:</strong> Analyze case law for relevant legal precedents and advice.</li>
           </ul>
-          <Link to="/chatbot" className="card-button">Time to Take Action!</Link>
+          <Link to="./Chatbot.jsx" className="card-button">Time to Take Action!</Link>
         </div>
 
         {/* Legal Document Storage Card */}
@@ -49,6 +53,7 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
+          <Link to="./community/community.jsx" className="card-button">Time to Take Action!</Link>
         </div>
       </div>
     </div>
