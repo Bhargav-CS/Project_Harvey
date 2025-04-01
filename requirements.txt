@@ -20,3 +20,5 @@ arxiv
 langchainhub
 PyPDF2
 langchain-objectbox
+React
+React-dom

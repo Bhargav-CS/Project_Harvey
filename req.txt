@@ -1,0 +1,11 @@
+langchain
+langchain-core
+langchain-text-splitters
+langchain-google-genai
+langchain-chroma
+langchain-community
+pypdf
+chromadb
+google-generativeai
+sentence-transformers
+pydantic
