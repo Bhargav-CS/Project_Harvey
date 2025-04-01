@@ -59,7 +59,7 @@ async def signup_user(request: SignupRequest):
 async def auth_callback(code: str, state: str = None):
     """
     Handles the callback from Auth0 after Google login.
-    Exchanges the authorization code for tokens.
+    Exchanges the authorization code for tokens and redirects to the home page.
     """
     url = f"https://{AUTH0_DOMAIN}/oauth/token"
     payload = {
@@ -74,7 +74,8 @@ async def auth_callback(code: str, state: str = None):
     try:
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
-        return response.json()  # Returns the token and user details
+        # Redirect to the home page after successful login
+        return RedirectResponse(url="http://localhost:3000/home")  # Frontend home page URL
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
