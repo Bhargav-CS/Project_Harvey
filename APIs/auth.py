@@ -1,10 +1,10 @@
 import requests
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from config import AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_AUDIENCE  # Use relative import
+from config import AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_AUDIENCE
 from fastapi.responses import RedirectResponse
 
-app = FastAPI()
+auth_router = APIRouter()
 
 class LoginRequest(BaseModel):
     email: str
@@ -15,7 +15,7 @@ class SignupRequest(BaseModel):
     password: str
     name: str  # Additional field for user name
 
-@app.post("/login")  # Remove "/auth" prefix since it's mounted in server.py
+@auth_router.post("/login")
 async def login_user(request: LoginRequest):
     url = f"https://{AUTH0_DOMAIN}/oauth/token"
     payload = {
@@ -35,7 +35,7 @@ async def login_user(request: LoginRequest):
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
-@app.post("/signup")  # Remove "/auth" prefix since it's mounted in server.py
+@auth_router.post("/signup")
 async def signup_user(request: SignupRequest):
     url = f"https://{AUTH0_DOMAIN}/dbconnections/signup"
     payload = {
@@ -54,12 +54,11 @@ async def signup_user(request: SignupRequest):
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
-
-@app.get("/auth/callback")
+@auth_router.get("/auth/callback")
 async def auth_callback(code: str, state: str = None):
     """
     Handles the callback from Auth0 after Google login.
-    Exchanges the authorization code for tokens and redirects to the home page.
+    Exchanges the authorization code for tokens and returns the access token.
     """
     url = f"https://{AUTH0_DOMAIN}/oauth/token"
     payload = {
@@ -74,22 +73,25 @@ async def auth_callback(code: str, state: str = None):
     try:
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
-        # Redirect to the home page after successful login
-        return RedirectResponse(url="http://localhost:3000/home")  # Frontend home page URL
+        tokens = response.json()  # Contains access_token, id_token, etc.
+        return {"access_token": tokens.get("access_token"), "id_token": tokens.get("id_token")}
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
-@app.get("/auth/google-login-url")
+@auth_router.get("/auth/google-login-url")
 async def get_google_login_url():
     """
     Redirects the user to the Auth0 Google login page.
     """
-    google_login_url = (
-        f"https://{AUTH0_DOMAIN}/authorize"
-        f"?response_type=code"
-        f"&client_id={AUTH0_CLIENT_ID}"
-        f"&redirect_uri=http://localhost:8000/auth/callback"  # Replace <REDIRECT_URI> with your callback URL
-        f"&scope=openid%20profile%20email"
-        f"&connection=google-oauth2"
-    )
-    return RedirectResponse(url=google_login_url)
+    try:
+        google_login_url = (
+            f"https://{AUTH0_DOMAIN}/authorize"
+            f"?response_type=code"
+            f"&client_id={AUTH0_CLIENT_ID}"
+            f"&redirect_uri=http://localhost:3000/auth/callback"  # Match frontend
+            f"&scope=openid%20profile%20email"
+            f"&connection=google-oauth2"
+        )
+        return RedirectResponse(url=google_login_url)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to generate Google login URL")

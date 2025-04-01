@@ -13,7 +13,7 @@ from langchain_community.llms import ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
-from auth import login_user, signup_user, get_google_login_url, auth_callback  # Import the route handlers from auth.py
+from auth import login_user, signup_user, get_google_login_url, auth_callback, auth_router  # Import the route handlers and router from auth.py
 
 class PDFProcessor:
     def __init__(self, directory_path):
@@ -172,7 +172,7 @@ async def startup_event():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  # Allow requests from your frontend
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -193,22 +193,6 @@ async def get_query_response(request: QueryRequest):
         return {"answer": response['answer']}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# Create a router for authentication
-auth_router = APIRouter()
-
-# Add the login and signup routes to the router
-auth_router.post("/auth/login")(login_user)
-auth_router.post("/auth/signup")(signup_user)
-
-# Add the google-login route to the router
-
-
-# Add the google-login-url route to the router
-auth_router.get("/auth/google-login-url")(get_google_login_url)
-
-# Add the auth callback route to the router
-auth_router.get("/auth/callback")(auth_callback)
 
 # Include the auth router in the main app
 app.include_router(auth_router)
