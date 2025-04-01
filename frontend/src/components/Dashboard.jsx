@@ -26,7 +26,7 @@ const Dashboard = () => {
             <li><strong>Document Drafting:</strong> Create legally sound documents with AI-powered suggestions.</li>
             <li><strong>Case Analysis:</strong> Analyze case law for relevant legal precedents and advice.</li>
           </ul>
-          <Link to="./Chatbot.jsx" className="card-button">Time to Take Action!</Link>
+          <Link to="./Chatbot" className="card-button">Time to Take Action!</Link>
         </div>
 
         {/* Legal Document Storage Card */}
@@ -53,7 +53,7 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <Link to="./community/community.jsx" className="card-button">Time to Take Action!</Link>
+          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
         </div>
       </div>
     </div>
