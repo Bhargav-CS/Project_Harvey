@@ -13,7 +13,7 @@ from langchain_community.llms import ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
-from auth import login_user, signup_user  # Import the route handlers from auth.py
+from auth import login_user, signup_user, get_google_login_url, auth_callback  # Import the route handlers from auth.py
 
 class PDFProcessor:
     def __init__(self, directory_path):
@@ -161,6 +161,15 @@ app = FastAPI(
     description="A FastAPI server for the Legal AI Assistant"
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """
+    Initialize components during the startup event.
+    """
+    global legal_ai_assistant, retrieval_chain
+    legal_ai_assistant = initialize_components()
+    retrieval_chain = legal_ai_assistant.create_retrieval_chain()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
@@ -175,12 +184,6 @@ class Message(BaseModel):
 
 class QueryRequest(BaseModel):
     messages: List[Message]
-
-@app.on_event("startup")
-async def startup_event():
-    global legal_ai_assistant, retrieval_chain
-    legal_ai_assistant = initialize_components()
-    retrieval_chain = legal_ai_assistant.create_retrieval_chain()
 
 @app.post("/query")
 async def get_query_response(request: QueryRequest):
@@ -198,8 +201,17 @@ auth_router = APIRouter()
 auth_router.post("/auth/login")(login_user)
 auth_router.post("/auth/signup")(signup_user)
 
+# Add the google-login route to the router
+
+
+# Add the google-login-url route to the router
+auth_router.get("/auth/google-login-url")(get_google_login_url)
+
+# Add the auth callback route to the router
+auth_router.get("/auth/callback")(auth_callback)
+
 # Include the auth router in the main app
 app.include_router(auth_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run("server:app", host="localhost", port=8000, reload=True)

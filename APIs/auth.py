@@ -2,6 +2,7 @@ import requests
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from config import AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_AUDIENCE  # Use relative import
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
@@ -52,3 +53,42 @@ async def signup_user(request: SignupRequest):
         return {"message": "User successfully registered"}
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
+
+
+@app.get("/auth/callback")
+async def auth_callback(code: str, state: str = None):
+    """
+    Handles the callback from Auth0 after Google login.
+    Exchanges the authorization code for tokens.
+    """
+    url = f"https://{AUTH0_DOMAIN}/oauth/token"
+    payload = {
+        "grant_type": "authorization_code",
+        "client_id": AUTH0_CLIENT_ID,
+        "client_secret": AUTH0_CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": "http://localhost:8000/auth/callback",  # Must match the one used in Auth0
+    }
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return response.json()  # Returns the token and user details
+    except requests.exceptions.HTTPError as e:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+
+@app.get("/auth/google-login-url")
+async def get_google_login_url():
+    """
+    Redirects the user to the Auth0 Google login page.
+    """
+    google_login_url = (
+        f"https://{AUTH0_DOMAIN}/authorize"
+        f"?response_type=code"
+        f"&client_id={AUTH0_CLIENT_ID}"
+        f"&redirect_uri=http://localhost:8000/auth/callback"  # Replace <REDIRECT_URI> with your callback URL
+        f"&scope=openid%20profile%20email"
+        f"&connection=google-oauth2"
+    )
+    return RedirectResponse(url=google_login_url)
