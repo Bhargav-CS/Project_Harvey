@@ -1,12 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// eslint-disable-next-line no-unused-vars
- 
+import { useNavigate } from "react-router-dom";
+
 import "./Dashboard.css";  // Make sure you have the correct styles for the dashboard
 
 
 
 const Dashboard = () => {
+  
+const navigate = useNavigate();
   return (
     <div className="dashboard-container">
       <div className="dashboard-header text-black" >
@@ -26,7 +28,7 @@ const Dashboard = () => {
             <li><strong>Document Drafting:</strong> Create legally sound documents with AI-powered suggestions.</li>
             <li><strong>Case Analysis:</strong> Analyze case law for relevant legal precedents and advice.</li>
           </ul>
-          <Link to="./Chatbot" className="card-button">Time to Take Action!</Link>
+          <Link useNavigate={navigate} to="/chatbot" className="card-button">Time to Take Action!</Link>
         </div>
 
         {/* Legal Document Storage Card */}
@@ -53,7 +55,9 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
+          <Link useNavigate={navigate} to="/community-platform" className="card-button">Join the Community</Link>
+
+
         </div>
       </div>
     </div>
