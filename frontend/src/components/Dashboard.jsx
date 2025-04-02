@@ -1,15 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
-// eslint-disable-next-line no-unused-vars
- 
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import "./Dashboard.css";  // Make sure you have the correct styles for the dashboard
 
-
-
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    setIsAuthenticated(false);
+    navigate("/login");
+  };
+
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header text-black" >
+      <div className="dashboard-header text-black">
         <h1>Specter.AI</h1>
         <p>Revolutionizing Legal Assistance with AI</p>
       </div>
@@ -26,7 +37,12 @@ const Dashboard = () => {
             <li><strong>Document Drafting:</strong> Create legally sound documents with AI-powered suggestions.</li>
             <li><strong>Case Analysis:</strong> Analyze case law for relevant legal precedents and advice.</li>
           </ul>
-          <Link to="./Chatbot" className="card-button">Time to Take Action!</Link>
+          <button 
+            className="card-button" 
+            onClick={() => navigate("/chatbot")}
+          >
+            Time to Take Action!
+          </button>
         </div>
 
         {/* Legal Document Storage Card */}
@@ -56,6 +72,18 @@ const Dashboard = () => {
           <Link to="./community/community" className="card-button">Time to Take Action!</Link>
         </div>
       </div>
+
+      {/* Logout Button */}
+      {isAuthenticated && (
+        <div className="logout-container">
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 };

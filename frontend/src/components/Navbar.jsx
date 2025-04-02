@@ -1,10 +1,18 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 
 let Navitem = ["Home", "Services", "About", "Contact"];
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useContext(AuthContext);
   const [navbar, setNavbar] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="font-poppins flex flex-col justify-center items-center !bg-white">
@@ -27,23 +35,23 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Sign Up & Login Buttons */}
+          {/* Authentication Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Sign Up */}
-            <Link
-              to="/signup"
-              className="px-4 py-2 bg-[#DDA45C] text-white rounded-lg hover:bg-[#b9833a]"
-            >
-              Sign Up
-            </Link>
-            
-            {/* Login */}
-            <Link
-              to="/login"
-              className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-100"
-            >
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-100"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

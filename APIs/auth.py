@@ -1,10 +1,13 @@
 import requests
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 from config import AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_AUDIENCE
 from fastapi.responses import RedirectResponse
 
 auth_router = APIRouter()
+
+# In-memory dictionary to track used authorization codes
+used_codes = {}
 
 class LoginRequest(BaseModel):
     email: str
@@ -54,44 +57,51 @@ async def signup_user(request: SignupRequest):
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
+@auth_router.get("/auth/google-login-url")
+async def get_google_login_url():
+    """Generates the Google OAuth login URL"""
+    auth_url = (
+        f"https://{AUTH0_DOMAIN}/authorize"
+        f"?response_type=code"
+        f"&client_id={AUTH0_CLIENT_ID}"
+        f"&redirect_uri=http://localhost:3000/auth/callback"
+        f"&scope=openid%20profile%20email"
+        f"&connection=google-oauth2"
+    )
+    return {"login_url": auth_url}
+
 @auth_router.get("/auth/callback")
-async def auth_callback(code: str, state: str = None):
-    """
-    Handles the callback from Auth0 after Google login.
-    Exchanges the authorization code for tokens and returns the access token.
-    """
-    url = f"https://{AUTH0_DOMAIN}/oauth/token"
+async def auth_callback(request: Request):
+    code = request.query_params.get("code")
+
+    if not code:
+        raise HTTPException(status_code=400, detail="Authorization code missing")
+
+    # Check if the code has already been used
+    if code in used_codes:
+        raise HTTPException(status_code=403, detail="Authorization code already used")
+
+    token_url = f"https://{AUTH0_DOMAIN}/oauth/token"
     payload = {
         "grant_type": "authorization_code",
         "client_id": AUTH0_CLIENT_ID,
         "client_secret": AUTH0_CLIENT_SECRET,
         "code": code,
-        "redirect_uri": "http://localhost:8000/auth/callback",  # Must match the one used in Auth0
+        "redirect_uri": f"http://localhost:3000/auth/callback"  # Ensure this matches your frontend
     }
+
     headers = {"Content-Type": "application/json"}
 
     try:
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(token_url, json=payload, headers=headers)
         response.raise_for_status()
-        tokens = response.json()  # Contains access_token, id_token, etc.
-        return {"access_token": tokens.get("access_token"), "id_token": tokens.get("id_token")}
+        token_data = response.json()
+
+        # Mark the code as used
+        used_codes[code] = True
+
+        return token_data  # Send this token back to the frontend
     except requests.exceptions.HTTPError as e:
         raise HTTPException(status_code=response.status_code, detail=response.json())
 
-@auth_router.get("/auth/google-login-url")
-async def get_google_login_url():
-    """
-    Redirects the user to the Auth0 Google login page.
-    """
-    try:
-        google_login_url = (
-            f"https://{AUTH0_DOMAIN}/authorize"
-            f"?response_type=code"
-            f"&client_id={AUTH0_CLIENT_ID}"
-            f"&redirect_uri=http://localhost:3000/auth/callback"  # Match frontend
-            f"&scope=openid%20profile%20email"
-            f"&connection=google-oauth2"
-        )
-        return RedirectResponse(url=google_login_url)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to generate Google login URL")
+

@@ -13,7 +13,8 @@ from langchain_community.llms import ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
-from auth import login_user, signup_user, get_google_login_url, auth_callback, auth_router  # Import the route handlers and router from auth.py
+from auth import login_user, signup_user, auth_callback, auth_router  # Import the route handlers and router from auth.py
+from contextlib import asynccontextmanager
 
 class PDFProcessor:
     def __init__(self, directory_path):
@@ -155,20 +156,23 @@ def initialize_components():
 
     return legal_ai_assistant
 
-app = FastAPI(
-    title="Legal AI Assistant",
-    version="1.0",
-    description="A FastAPI server for the Legal AI Assistant"
-)
-
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     """
-    Initialize components during the startup event.
+    Initialize components during the application lifespan.
     """
     global legal_ai_assistant, retrieval_chain
     legal_ai_assistant = initialize_components()
     retrieval_chain = legal_ai_assistant.create_retrieval_chain()
+    yield  # Application startup complete
+    # Cleanup logic (if needed) can be added here
+
+app = FastAPI(
+    title="Legal AI Assistant",
+    version="1.0",
+    description="A FastAPI server for the Legal AI Assistant",
+    lifespan=lifespan
+)
 
 app.add_middleware(
     CORSMiddleware,

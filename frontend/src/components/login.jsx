@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 
 const Login = () => {
+  const { login } = useContext(AuthContext);
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/auth/google-login-url");
+      localStorage.setItem("access_token", "dummy_token"); // Replace with actual token logic
+      login(); // Update global auth state
+      window.location.href = response.data.login_url; // Redirect to Google login page
+    } catch (error) {
+      console.error("Error getting Google login URL:", error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
@@ -24,7 +39,10 @@ const Login = () => {
         <div className="my-4 text-center text-gray-600">OR</div>
 
         {/* Google Login Button */}
-        <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100"
+        >
           <img src="./glogo.png" alt="Google" className="w-5 h-5 mr-2" />
           Log In with Google
         </button>
