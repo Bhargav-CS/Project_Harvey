@@ -69,13 +69,11 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <a href="https://specterai-community.netlify.app" className="card-button" target="_blank" rel="noopener noreferrer">
-  Time to Take Action!
-</a>
+          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
         </div>
       </div>
 
-      {/* Logout Button
+      {/* Logout Button */}
       {isAuthenticated && (
         <div className="logout-container">
           <button
@@ -84,8 +82,8 @@ const Dashboard = () => {
           >
             Logout
           </button>
-        </div> */}
-      {/* )} */}
+        </div>
+      )}
     </div>
   );
 };
