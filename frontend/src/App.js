@@ -13,9 +13,7 @@ import About from "./components/About.jsx";
 import Login from "./components/login.jsx";
 import Signup from "./components/Signup.jsx";
 import ChatbotUI from "./components/Chatbot.jsx";
-import CommunityHome from './components/community/CommunityHome';
-import ChatWindow from './components/community/ChatWindow';
-import Profile from './components/community/Profile';
+
 import AuthCallback from "./components/AuthCallback.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import { AuthProvider } from "./AuthContext";
@@ -65,9 +63,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/community" element={<CommunityHome />} />
-          <Route path="/community/:channelId" element={<ChatWindow />} />
-          <Route path="/community/profile" element={<Profile />} />
+          
+          
         </Routes>
         <DisclaimerPopup />
       </div>

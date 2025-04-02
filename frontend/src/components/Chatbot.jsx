@@ -32,7 +32,7 @@ const ChatbotUI = () => {
     try {
       // Make API call to get bot response
       const response = await axios.post("http://localhost:8000/query", {
-      // const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
+        // const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
         messages: [
           ...messages.map((msg) => ({ role: msg.sender, content: msg.text })),
           { role: "user", content: userInput },
@@ -147,7 +147,7 @@ const ChatbotUI = () => {
           </button>
 
           {showUploadOptions && (
-            <div className="upload-modal">
+            <div className={`upload-modal ${showUploadOptions ? "active" : ""}`}>
               <div className="upload-options">
                 <label className="upload-option">
                   <input
@@ -175,6 +175,7 @@ const ChatbotUI = () => {
               </div>
             </div>
           )}
+
         </form>
 
         <div className="button-container">
