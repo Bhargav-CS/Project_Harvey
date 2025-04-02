@@ -1,17 +1,17 @@
 import React, { useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { login,AuthContext } from "../AuthContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
-
+  const { isAuthenticated } = useContext(AuthContext);
 
   const handleGoogleLogin = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/auth/google-login-url`);
       localStorage.setItem("access_token", "dummy_token"); // Replace with actual token logic
-    
+      login(); // Update global auth state
       window.location.href = response.data.login_url; // Redirect to Google login page
     } catch (error) {
       console.error("Error getting Google login URL:", error);

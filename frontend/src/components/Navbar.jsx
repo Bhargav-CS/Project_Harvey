@@ -1,16 +1,16 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { AuthContext } from "../AuthContext";
 
 let Navitem = ["Home", "Services", "About", "Contact"];
 
 const Navbar = () => {
-  
+  const { isAuthenticated, logout } = useContext(AuthContext);
   const [navbar, setNavbar] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-   
+    logout();
     navigate("/login");
   };
 
@@ -37,7 +37,7 @@ const Navbar = () => {
 
           {/* Authentication Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            {localStorage.getItem("access_token") ? (
+            {isAuthenticated  ? (
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
