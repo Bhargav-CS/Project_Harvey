@@ -69,7 +69,9 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
+          <a href="https://specterai-community.netlify.app" className="card-button" target="_blank" rel="noopener noreferrer">
+  Time to Take Action!
+</a>
         </div>
       </div>
 

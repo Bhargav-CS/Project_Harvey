@@ -327,8 +327,7 @@ const Home = () => {
                   <img src={"./logofooter.svg"} alt="footer" />
                 </a>
                 <div className="text-[#F2F2F2] xl:max-w-[249px] lg:max-w-[249px] md:max-w-[190px] text-justify xl:text-base md:text-xs lg:text-sm leading-6 tracking-[0.02em] font-normal">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Massa
-                  habitant enim eget at non, integer non tempus.
+                The AI Chatbot has been a game-changer for my law practice. It helps me automate client inquiries, saving me hours every week while ensuring potential clients receive instant responses. Highly recommended!
                 </div>
                 <div className="flex justify-between max-w-[200px] lg:gap-7 gap-3.5 items-center">
                   <img
@@ -409,7 +408,7 @@ const Home = () => {
                   Contact
                 </div>
                 <div className="max-w-[243px] text-[#F2F2F2] xl:text-base lg:text-sm md:text-xs leading-6 font-normal text-start">
-                  802, Orbit complex, C.G Road, Ahmedabad, 380009.
+                  VIT University, Bhopal
                 </div>
                 <div className="text-[#F2F2F2] xl:text-base lg:text-sm md:text-xs leading-6 font-normal text-justify">
                   +91 12345 67890

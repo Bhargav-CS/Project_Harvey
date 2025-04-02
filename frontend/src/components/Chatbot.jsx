@@ -3,6 +3,8 @@ import axios from "axios"; // Added axios
 import { FaPaperclip, FaImage } from "react-icons/fa"; // Paperclip and Image icons
 import "./Chatbot.css"; // For custom styles
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 const ChatbotUI = () => {
   const [messages, setMessages] = useState([
     { text: "Hello! How can I assist you today?", sender: "bot" },
@@ -31,7 +33,7 @@ const ChatbotUI = () => {
 
     try {
       // Make API call to get bot response
-      const response = await axios.post("http://localhost:8000/query", {
+      const response = await axios.post(`${BACKEND_URL}/query`, {
       // const response = await axios.post("https://1109-2409-40c4-1c-f244-1d8a-6e93-5632-a442.ngrok-free.app/query", {
         messages: [
           ...messages.map((msg) => ({ role: msg.sender, content: msg.text })),

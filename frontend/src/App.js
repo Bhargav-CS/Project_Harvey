@@ -18,7 +18,6 @@ import ChatWindow from './components/community/ChatWindow';
 import Profile from './components/community/Profile';
 import AuthCallback from "./components/AuthCallback.jsx";
 import Dashboard from "./components/Dashboard.jsx";
-import { AuthProvider } from "./AuthContext";
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
@@ -45,7 +44,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
+    
       <div>
         <Navbar />
         <Routes>
@@ -58,21 +57,22 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/signup" element={<Signup />} />
-          <Route
+          <Route path="/chatbot" element={<ChatbotUI />} />
+          {/* <Route
             path="/chatbot"
             element={
               <ProtectedRoute>
                 <ChatbotUI />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route path="/community" element={<CommunityHome />} />
           <Route path="/community/:channelId" element={<ChatWindow />} />
           <Route path="/community/profile" element={<Profile />} />
         </Routes>
         <DisclaimerPopup />
       </div>
-    </AuthProvider>
+   
   );
 }
 
