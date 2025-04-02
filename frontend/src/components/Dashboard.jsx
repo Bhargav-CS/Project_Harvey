@@ -73,7 +73,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Logout Button */}
+      {/* Logout Button
       {isAuthenticated && (
         <div className="logout-container">
           <button
@@ -82,8 +82,8 @@ const Dashboard = () => {
           >
             Logout
           </button>
-        </div>
-      )}
+        </div> */}
+      {/* )} */}
     </div>
   );
 };
