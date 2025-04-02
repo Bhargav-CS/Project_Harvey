@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 
-let Navitem = ["Home", "Services", "About", "Contact"];
+const Navitem = ["Home", "Services", "About", "Contact"];
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -15,22 +15,17 @@ const Navbar = () => {
   };
 
   return (
-    <div className="font-poppins flex flex-col justify-center items-center !bg-white">
-      <div className="w-full h-[110px] bg-[#FFFFFF] flex justify-center">
-        <div className="flex justify-between md:justify-center items-center px-5 w-full max-w-[1440px] sm:px-5 lg:px-24 sm:gap-7 md:gap-12 lg:gap-20 xl:gap-32">
+    <div className="font-poppins flex flex-col justify-center items-center bg-white">
+      <div className="w-full h-[110px] flex justify-center">
+        <div className="flex justify-between items-center px-5 w-full max-w-[1440px]">
           <Link to="/" className="w-full max-w-fit">
-            <img src={"/logo.svg"} alt="logo" />
+            <img src="/logo.svg" alt="logo" />
           </Link>
 
-          {/* Navigation Items */}
-          <div className="hidden md:flex justify-between gap-5 font-medium text-lg">
-            {Navitem.map((navitem, index) => (
-              <Link
-                to={`/${navitem.toLowerCase()}`}
-                key={index}
-                className="text-[#1C1C23] hover:text-[#DDA45C] font-semibold"
-              >
-                {navitem}
+          <div className="hidden md:flex gap-5 font-medium text-lg">
+            {Navitem.map((item, index) => (
+              <Link key={index} to={`/${item.toLowerCase()}`} className="text-[#1C1C23] hover:text-[#DDA45C] font-semibold">
+                {item}
               </Link>
             ))}
           </div>

@@ -69,7 +69,9 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
+          <Link useNavigate={navigate} to="/community-platform" className="card-button">Join the Community</Link>
+
+
         </div>
       </div>
 
