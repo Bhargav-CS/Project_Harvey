@@ -6,6 +6,8 @@ from fastapi.responses import RedirectResponse
 
 auth_router = APIRouter()
 
+FRONTEND_URL = "http://localhost:3000"  # Replace with your ngrok frontend URL when needed
+
 # In-memory dictionary to track used authorization codes
 used_codes = {}
 
@@ -64,7 +66,7 @@ async def get_google_login_url():
         f"https://{AUTH0_DOMAIN}/authorize"
         f"?response_type=code"
         f"&client_id={AUTH0_CLIENT_ID}"
-        f"&redirect_uri=http://localhost:3000/auth/callback"
+        f"&redirect_uri={FRONTEND_URL}/auth/callback"
         f"&scope=openid%20profile%20email"
         f"&connection=google-oauth2"
     )
@@ -87,7 +89,7 @@ async def auth_callback(request: Request):
         "client_id": AUTH0_CLIENT_ID,
         "client_secret": AUTH0_CLIENT_SECRET,
         "code": code,
-        "redirect_uri": f"http://localhost:3000/auth/callback"  # Ensure this matches your frontend
+        "redirect_uri": f"{FRONTEND_URL}/auth/callback"  # Ensure this matches your frontend
     }
 
     headers = {"Content-Type": "application/json"}

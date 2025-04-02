@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../constants";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AuthCallback = () => {
         // Clear the code from the URL before making the request
         window.history.replaceState({}, document.title, "/auth/callback");
 
-        const response = await axios.get(`http://localhost:8000/auth/callback?code=${code}`);
+        const response = await axios.get(`${BACKEND_URL}/auth/callback?code=${code}`);
         console.log("Token received:", response.data);
 
         // Save token in localStorage or state management

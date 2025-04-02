@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"; // Added useEffect
 import axios from "axios"; // Added axios
 import { FaPaperclip, FaImage } from "react-icons/fa"; // Paperclip and Image icons
+import { BACKEND_URL } from "../constants"; // Added BACKEND_URL import
 import "./Chatbot.css"; // For custom styles
 
 const ChatbotUI = () => {
