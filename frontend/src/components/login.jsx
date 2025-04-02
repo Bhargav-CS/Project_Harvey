@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
+import { BACKEND_URL } from "../constants";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
 
   const handleGoogleLogin = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/auth/google-login-url");
+      const response = await axios.get(`${BACKEND_URL}/auth/google-login-url`);
       localStorage.setItem("access_token", "dummy_token"); // Replace with actual token logic
       login(); // Update global auth state
       window.location.href = response.data.login_url; // Redirect to Google login page
