@@ -151,7 +151,7 @@ const Home = () => {
 
   const navigate = useNavigate();
   function handleConsult(){
-    navigate('./Chatbot')
+    navigate('/chatbot')
   }
   function serviceHandler(){
     navigate("/services")

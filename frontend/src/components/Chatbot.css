@@ -21,6 +21,13 @@ body {
   width: 100vw;
   background-color: #f4f4f7; /* Soft Light Gray */
   font-family: 'Inter', sans-serif;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0 auto; /* Center horizontally while keeping vertical flow */
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: flex-start; /* Align content to the top */
+  align-items: center; /* Center content horizontally */
 }
 
 /* 🌟 Sidebar Styling */
