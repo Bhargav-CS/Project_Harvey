@@ -22,6 +22,7 @@
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
     "react-tailwind-css-starter-pack": "file:",
+    "react-toastify": "^11.0.5",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.16",
     "web-vitals": "^2.1.4",

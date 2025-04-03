@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import Toast styles
 
 import "./Dashboard.css";  // Make sure you have the correct styles for the dashboard
 
@@ -69,7 +71,14 @@ const Dashboard = () => {
             <li><strong>Mentorship Matching:</strong> Connect with experienced legal professionals for guidance.</li>
             <li><strong>Peer Reviews:</strong> Review and critique shared case studies to improve legal practices.</li>
           </ul>
-          <Link to="./community/community" className="card-button">Time to Take Action!</Link>
+          <a 
+            href="https://specterai-community.netlify.app/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="card-button"
+          >
+            Time to Take Action!
+          </a>
         </div>
       </div>
 
@@ -84,6 +93,7 @@ const Dashboard = () => {
           </button>
         </div>
       )}
+      <ToastContainer position="bottom-center" /> {/* Add ToastContainer */}
     </div>
   );
 };

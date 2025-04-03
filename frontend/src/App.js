@@ -63,8 +63,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
-          
         </Routes>
         <DisclaimerPopup />
       </div>
