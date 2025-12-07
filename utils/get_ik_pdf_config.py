@@ -1,9 +1,11 @@
 import json
 import requests
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-with open("kanoon_api_key.txt") as f:
-    API_TOKEN = f.read().strip()
- 
+
+API_TOKEN = os.getenv("IKANOON_API_KEY")
 
 # Replace with your actual token
 BASE_URL = "https://api.indiankanoon.org"

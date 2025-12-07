@@ -1,10 +1,28 @@
-fastapi
-uvicorn
-pydantic
-python-dotenv
-requests
-langchain-community
-langchain-core
-langchain-ollama
-sentence-transformers
-PyPDF2
+# Project Harvey - Requirements
+# Legal AI Assistant Dependencies
+
+# Core LangChain Ecosystem
+langchain==1.1.2
+langchain-core==1.1.1
+langchain-community==0.4.1
+langchain-ollama==1.0.0
+langchain-text-splitters==1.0.0
+
+
+# Vector Database
+chromadb==1.3.5
+
+# Web Framework & API
+fastapi==0.124.0
+uvicorn==0.38.0
+pydantic==2.12.5
+
+# PDF Processing
+pypdf==6.4.0
+
+# ML & NLP
+sentence-transformers==5.1.2
+torch==2.9.1
+
+# HTTP & Utilities
+requests==2.32.5
